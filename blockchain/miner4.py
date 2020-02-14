@@ -23,13 +23,13 @@ def proof_of_work(last_proof):
     start = timer()
 
     print("Searching for next proof")
-
-    block_string = json.dumps(last_proof, sort_keys=True)
     proof = 28000000
-    while valid_proof(block_string, proof) is False and proof > 0:
+    block_string = json.dumps(last_proof, sort_keys=True)
+    while valid_proof(block_string, proof) is False:
         proof -= 1
-    if proof <= 0:
-        return None
+
+    if proof <= 21000000:
+        return
     else:
         print("Proof found: " + str(proof) + " in " + str(timer() - start))
         return proof
@@ -43,9 +43,11 @@ def valid_proof(last_hash, proof):
 
     IE:  last_hash: ...AE9123456, new hash 123456E88...
     """
-    guess = f'{last_hash}{proof}'.encode()
+    current = f'{last_hash}'.encode()
+    current_hash = hashlib.sha256(current).hexdigest()
+    guess = f'{proof}'.encode()
     guess_hash = hashlib.sha256(guess).hexdigest()
-    return guess_hash[:6] == last_hash[-6:]
+    return guess_hash[:6] == current_hash[-6:]
 
 
 if __name__ == '__main__':
@@ -71,7 +73,6 @@ if __name__ == '__main__':
         # Get the last proof from the server
         r = requests.get(url=node + "/last_proof")
         data = r.json()
-        
         new_proof = proof_of_work(data.get('proof'))
 
         post_data = {"proof": new_proof,

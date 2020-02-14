@@ -15,9 +15,23 @@ class Ticket:
 def reconstruct_trip(tickets, length):
     hashtable = HashTable(length)
     route = [None] * length
+    count = 0
 
-    """
-    YOUR CODE HERE
-    """
+    for i in tickets:
+        hash_table_insert(hashtable, i.source, i.destination)
 
-    pass
+    def rec_func(key = 'NONE'):
+        nonlocal count
+        if  hash_table_retrieve(hashtable, key) == 'NONE':
+            print('exit')
+            print(route[:-1])
+            return route[:-1]
+        else:
+            route[count] = hash_table_retrieve(hashtable, key)
+            count += 1
+            print(route[count])
+            rec_func(hash_table_retrieve(hashtable, key))
+    return rec_func()
+
+
+                
