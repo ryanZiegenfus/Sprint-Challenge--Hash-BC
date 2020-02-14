@@ -25,10 +25,10 @@ def proof_of_work(last_proof):
     print("Searching for next proof")
 
     block_string = json.dumps(last_proof, sort_keys=True)
-    proof = 7000000
-    while valid_proof(block_string, proof) is False and proof < 15000000:
-        proof += 1
-    if proof >= 15000000:
+    proof = 14000000
+    while valid_proof(block_string, proof) is False and proof > 0:
+        proof -= 1
+    if proof <= 0:
         return None
     else:
         print("Proof found: " + str(proof) + " in " + str(timer() - start))
@@ -71,7 +71,7 @@ if __name__ == '__main__':
         # Get the last proof from the server
         r = requests.get(url=node + "/last_proof")
         data = r.json()
-        
+    
         new_proof = proof_of_work(data.get('proof'))
 
         post_data = {"proof": new_proof,

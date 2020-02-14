@@ -69,11 +69,13 @@ def hash_table_retrieve(hash_table, key):
     index = hash(key, len(hash_table.storage))
 
     current_pair = hash_table.storage[index]
-
-    while current_pair is not None:
-        if(current_pair.key == key):
-            return current_pair.value
-        current_pair = current_pair.next
+    if current_pair == None:
+        return None
+    else:
+        while current_pair is not None:
+            if(current_pair.key == key):
+                return current_pair.value
+            current_pair = current_pair.next
 
 
 def hash_table_resize(hash_table):
